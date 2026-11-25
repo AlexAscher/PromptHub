@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="ru" data-bs-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="PromptHub — бесплатный каталог промптов для ChatGPT, Claude, Gemini, Midjourney и других нейросетей." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>PromptHub — каталог AI-промптов</title>
+    <script>
+      try {
+        var t = localStorage.getItem('ph-theme')
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-bs-theme', t)
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

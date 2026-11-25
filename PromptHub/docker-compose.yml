@@ -1,0 +1,40 @@
+name: prompthub
+
+services:
+  # Серверная часть и БД: PocketBase (REST API, авторизация, файлы)
+  pocketbase:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      PH_APP_URL: "http://localhost:${PH_PORT:-8080}"
+      PH_SMTP_HOST: mailpit
+      PH_SMTP_PORT: "1025"
+    volumes:
+      - pb_data:/pb/pb_data
+    ports:
+      - "127.0.0.1:8090:8090"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8090/api/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # Клиентская часть: Vue SPA, собранная Vite и раздаваемая nginx
+  web:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      pocketbase:
+        condition: service_healthy
+    ports:
+      - "${PH_PORT:-8080}:80"
+
+  # Тестовый SMTP-сервер: письма сброса пароля видны на http://localhost:8025
+  mailpit:
+    image: axllent/mailpit:v1.21
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8025:8025"
+
+volumes:
+  pb_data:
